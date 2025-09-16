@@ -107,4 +107,3 @@ while True:
     history.append({"role": "assistant", "content": response.content})
     print(f"Albert: {response.content}")
 '''
-
