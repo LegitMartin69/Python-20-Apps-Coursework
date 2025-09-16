@@ -52,8 +52,6 @@ chain = prompt | llm | StrOutputParser()
 
 history = []
 
-
-
 page = gr.Blocks(
     title="Chat with Einstein",
     theme=gr.themes.Soft()
