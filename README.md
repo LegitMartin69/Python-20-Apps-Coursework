@@ -15,4 +15,4 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
        - install streamlit
        - run: streamlit run Web2.py
 
-That’s it for now.
+More projects to come!
