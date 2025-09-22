@@ -13,19 +13,20 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
    - Simple to-do list that saves tasks in todo.txt
    - To run:
        - install streamlit
+       -
        - run: streamlit run Web2.py
+         
+3. Weather Data API
+   - Uses Flask + Pandas
+   - Serves historical temperature data from weather stations
+   - Endpoints: 
+       - / → list of stations
+       - /api/v1/<station>/<date> → temperature on a specific date
+       - /api/v1/<station> → all data for a station
+       - /api/v1/yearly/<station>/<year> → yearly data
 
-2. Weather Data API
-   Uses Flask + Pandas
-   Serves historical temperature data from weather stations
-   Endpoints:
-      - / → list of stations
-      - /api/v1/<station>/<date> → temperature on a specific date
-      - /api/v1/<station> → all data for a station
-      - /api/v1/yearly/<station>/<year> → yearly data
-
-   To run:
-      install flask, pandas
-      run: python main.py
+   - To run:
+       - install flask, pandas
+       - run: python main.py
 
 More projects to come!
