@@ -10,24 +10,40 @@ days = st.slider("Forecast Days", min_value=1, max_value=5,
 option = st.selectbox("Select data to view", ("Temperature", "Sky"))
 st.subheader(f"{option} for the next {days} days in {place}")
 
+# checks if text input is not empty
 if place:
     # Get the temperature/sky data
-    filtered_data = get_data(place, days)
+    try:
+        filtered_data = get_data(place, days)
 
-    if option == "Temperature":
-    # Create a temperature plot
-        temperatures = [dict["main"]["temp"] for dict in filtered_data]
-        dates = [dict["dt_txt"] for dict in filtered_data]
-        figure = px.line(x=dates, y=temperatures, labels={"x": "Date",
-                                                          "y": "Temperature (Celsius)"})
-        st.plotly_chart(figure)
+        if option == "Temperature":
+            # Create a temperature plot
+            temperatures = [dict["main"]["temp"] for dict in filtered_data]
 
-    elif option == "Sky":
-        images = {"Clear": "images/clear.png",
-                  "Clouds": "images/cloud.png",
-                  "Rain": "images/rain.png",
-                  "Snow": "images/snow.png"}
-        sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
-        image_paths = [images[condition] for condition in sky_conditions]
-        print(image_paths)
-        st.image(image_paths, width=110)
+            # Gives the temperature the correct format
+            for i in range(len(temperatures)):
+                temperatures[i] = temperatures[i] / 10
+                temperatures[i] = round(temperatures[i], 1)
+            print(temperatures)
+            dates = [dict["dt_txt"] for dict in filtered_data]
+
+            # Draws the graph
+            figure = px.line(x=dates, y=temperatures, labels={"x": "Date",
+                                                              "y": "Temperature (Celsius)"})
+            st.plotly_chart(figure)
+
+        elif option == "Sky":
+            # loads images
+            images = {"Clear": "images/clear.png",
+                      "Clouds": "images/cloud.png",
+                      "Rain": "images/rain.png",
+                      "Snow": "images/snow.png"}
+            sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
+
+            # matches images to the data from the API
+            image_paths = [images[condition] for condition in sky_conditions]
+            print(image_paths)
+            st.write("Each line equals to one day, each image represents a 3 hour window")
+            st.image(image_paths, width=80)
+    except KeyError:
+        st.write("That place does not exist")
