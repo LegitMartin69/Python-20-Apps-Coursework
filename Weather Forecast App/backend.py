@@ -1,6 +1,6 @@
 import requests
 
-def get_data(place, forecast_days=5, type=None):
+def get_data(place, forecast_days=5):
     """
     Gets the weather data through openweathermap.org api
     Gets the API_KEY from the .env file
@@ -18,13 +18,8 @@ def get_data(place, forecast_days=5, type=None):
     nr_values = 8 * forecast_days
     filtered_data = content["list"][:nr_values]
 
-    if type == "Temperature":
-        filtered_data = [dict["main"]["temp"] for dict in filtered_data]
-    elif type == "Sky":
-        filtered_data = [dict["weather"][0]["main"] for dict in filtered_data]
-
     return filtered_data
 
 if __name__ == "__main__":
 
-    print(get_data(place="Tokyo", forecast_days=3, type="Temperature"))
+    print(get_data(place="Tokyo", forecast_days=3))
