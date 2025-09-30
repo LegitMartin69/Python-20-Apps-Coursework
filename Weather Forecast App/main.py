@@ -21,10 +21,6 @@ if place:
             temperatures = [dict["main"]["temp"] for dict in filtered_data]
 
             # Gives the temperature the correct format
-            for i in range(len(temperatures)):
-                temperatures[i] = temperatures[i] / 10
-                temperatures[i] = round(temperatures[i], 1)
-            print(temperatures)
             dates = [dict["dt_txt"] for dict in filtered_data]
 
             # Draws the graph
