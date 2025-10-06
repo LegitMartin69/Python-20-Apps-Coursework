@@ -28,5 +28,15 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
    - To run:
        - install flask, pandas
        - run: python main.py
+    
+4. Weather Forecast Web App
+    - Uses Streamlit + Plotly + OpenWeatherMap API
+    - Shows weather forecast (temperature graph or sky images) for 1–5 days in a chosen city
+    - To run:
+       - get a free API key from openweathermap.org
+       - put it in a .env file
+       - install streamlit, plotly, requests
+       - run in terminal: streamlit run main.py
+
 
 More projects to come!
