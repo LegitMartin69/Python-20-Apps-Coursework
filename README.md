@@ -36,7 +36,17 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
        - get a free API key from openweathermap.org
        - put it in a .env file
        - install streamlit, plotly, requests
-       - run in terminal: streamlit run main.py
-
+     
+5. Diary Mood & Text Analysis App  
+    - Uses Streamlit + Plotly + NLTK + Regex  
+    - Combines two text analysis tools:  
+        - Diary Mood Analyzer: reads diary entries, detects their positivity and negativity using NLTK’s Sentiment Intensity Analyzer, and visualizes results as line graphs over time  
+        - Book Text Analyzer: allows searching through books for specific words, chapter titles, or sentences containing given words using regular expressions
+    - To run Diary Mood Analyzer:  
+        - install streamlit, plotly, nltk  
+        - run: streamlit run main.py  
+    - To run Book Text Analyzer:  
+        - choose your text file (book) path in the script  
+        - run: python exercise.py  
 
 More projects to come!
