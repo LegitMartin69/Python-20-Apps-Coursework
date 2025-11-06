@@ -1,5 +1,7 @@
 import smtplib
 import imghdr
+from tkinter import image_types
+
 import regex
 import re
 from email.message import EmailMessage
@@ -22,10 +24,11 @@ def send_email(image_path):
 
     # Looks through the .env file, finds the first match for data labeled as APP_PASSWORD and EMAIL_ADDRESS
     with open(".env", "r") as env:
+        env_data = env.read()
         email_pattern = re.compile("EMAIL_ADDRESS[^a-zA-Z0-9]*([a-zA-Z0-9@.]+)\n")
-        password_pattern = re.compile("APP_PASSWORD[^a-zA-Z0-9]*([a-zA-Z0-9@.]+)\n")
-        GMAIL_APP_PASSWORD = re.findall(password_pattern, env.read())[0]
-        EMAIL_ADDRESS = re.findall(email_pattern, env.read())[0]
+        password_pattern = re.compile("APP_PASSWORD[^a-zA-Z0-9]*([a-zA-Z]+)\n")
+        GMAIL_APP_PASSWORD = re.findall(password_pattern, env_data)[0]
+        EMAIL_ADDRESS = re.findall(email_pattern, env_data)[0]
 
     # Sets up the email content
     email_message = EmailMessage()
@@ -33,7 +36,11 @@ def send_email(image_path):
     email_message.set_content("The camera saw something, look at the attachment")
     with open(image_path, "rb") as file:
         content = file.read()
-    email_message.add_attachment(content, maintype="image", subtype=imghdr.what(None, content))
+    # Checks for an image type
+    image_type = imghdr.what(None, content)
+    if image_type is None:
+        image_type = "png"
+    email_message.add_attachment(content, maintype="image", subtype=image_type)
 
     # Establishes connection with gmail servers, sends email and ends connections
     gmail = smtplib.SMTP("smtp.gmail.com", 587)
