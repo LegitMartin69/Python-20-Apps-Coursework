@@ -49,4 +49,16 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
         - choose your text file (book) path in the script  
         - run: python exercise.py  
 
+6. Motion Detection Security App  
+    - Uses OpenCV + Threading + SMTP  
+    - Monitors webcam feed, detects motion, saves frames, and emails an alert with the captured image  
+    - To run:  
+        - create a .env file with:
+             - EMAIL_ADDRESS - the address to send the notification from, as well as to.
+             - APP_PASSWORD - an app password generated from the gmail security menu.
+        - install required packages
+        - run: python main.py  
+        - press Q to quit
+     
 More projects to come!
+
