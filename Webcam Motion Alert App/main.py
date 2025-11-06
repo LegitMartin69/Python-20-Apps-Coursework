@@ -5,6 +5,8 @@ import time
 from emailing import send_email
 from threading import Thread
 
+# Press Q to end the App
+
 video = cv2.VideoCapture(0)
 
 first_frame = None
@@ -24,8 +26,11 @@ def clean_folder():
 
 while True:
     status = 0
+    # Captures a frame
     check, frame = video.read()
+    # Converts it to grayscale
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # Blurs it to lower the image file size
     gray_frame_gau = cv2.GaussianBlur(gray_frame, (21, 21), 0)
 
     if first_frame is None:
@@ -39,6 +44,7 @@ while True:
 
     countours, check = cv2.findContours(dill_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    # Draws rectangles around an object (if it detects any)
     for c in countours:
         if cv2.contourArea(c) < 7500:
             continue
@@ -56,23 +62,26 @@ while True:
     status_list.append(status)
     status_list = status_list[-2:]
 
+    # If the object exists the frame, send an email
     if status_list[0] == 1 and status_list[1] == 0:
         email_thread = Thread(target=send_email, args=(image_with_object, ))
         email_thread.daemon = True
 
         email_thread.start()
 
+    # Shows the video feedback loop
     cv2.imshow("MY VIDEO", frame)
 
     key = cv2.waitKey(1)
 
+    # The Application can be quit by pressing 'q'
     if key == ord("q"):
         break
 
-
+# Ends the application
 video.release()
 
+# Cleans the folder with saved images
 clean_thread = Thread(target=clean_folder())
 clean_thread.daemon = True
-
 clean_thread.start()
