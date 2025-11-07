@@ -56,9 +56,21 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
         - create a .env file with:
              - EMAIL_ADDRESS - the address to send the notification from, as well as to.
              - APP_PASSWORD - an app password generated from the gmail security menu.
-        - install required packages
+        - install the required packages
         - run: python main.py  
         - press Q to quit
      
-More projects to come!
+7. Event Tracker & Email Notifier  
+   - Uses Requests + Selectorlib + SQLite + SMTP
+   - Scrapes upcoming tour events from a webpage, stores the new ones in a local database, and sends an email notification when a new event appears.  
+     Prevents duplicates by checking existing records.  
+   - To run:  
+       - Create a .env file with:  
+           - EMAIL_ADDRESS – your Gmail address  
+           - APP_PASSWORD – Gmail app password  
+       - Install the required packages
+       - Run:  
+           python main.py
 
+     
+More projects to come!
