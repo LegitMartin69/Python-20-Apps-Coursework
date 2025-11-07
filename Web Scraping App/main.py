@@ -4,10 +4,30 @@ import requests
 import selectorlib
 import smtplib, ssl
 import os
+import sqlite3
 from email.message import EmailMessage
+
+"""
+NOTES
+# Basic setup
+connection = sqlite3.connect("data.db")
+cursor = connection.cursor()
+# Launch sql query
+cursor.execute("SQL CODE HERE")
+# Get rows
+rows = cursor.fetchall()
+# Insert data
+new_rows = [(0,1,2), (3,4,5)]
+cursor.executemany("INSERT VALUES", new_rows)
+# Save Changes
+connection.commit()
+"""
+
 
 global URL
 URL = "http://programmer100.pythonanywhere.com/tours/"
+
+connection = sqlite3.connect("database.db")
 
 def scrape(url):
     """Scrape the page source from the URL"""
@@ -54,24 +74,52 @@ def send_email(message):
 
 
 def store(extracted):
-    with open("data.txt", "a") as file:
-        file.write(extracted + "\n")
+    # Splits the extracted string into 3 separate strings and cleans them of whitespaces
+    row = extracted.split(",")
+    row = [item.strip() for item in row]
+
+    # Assigns a new cursor
+    cursor = connection.cursor()
+    # Inserts values into the Database
+    cursor.execute("INSERT INTO Events VALUES(?,?,?)", row)
+    # Makes changes
+    connection.commit()
+
     print("DEBUG: Data stored")
 
 
 def read(extracted):
-    with open("data.txt", "r") as file:
-        return file.read()
+    # Splits the extracted string into 3 separate strings and cleans them of whitespaces
+    row = extracted.split(",")
+    row = [item.strip() for item in row]
+
+    # Assigns a new cursor
+    cursor = connection.cursor()
+
+    # Selects the extracted text from Database and pastes it into "rows" variable
+    cursor.execute("SELECT * FROM Events WHERE band=? AND city=? AND date_text=?", row)
+    rows = cursor.fetchall()
+
+    print("DEBUG: Data read, found: ", rows)
+    return rows
 
 
 if __name__ == "__main__":
     while True:
+        # Scrapes and extracts data
         scraped = scrape(URL)
         extracted = extract(scraped)
         print(extracted)
-        content = read(extracted)
+
+        # Checks if the extracted data have changed
         if extracted != "No upcoming tours":
-            if extracted not in content:
+            row = read(extracted)
+            print(row)
+            # Checks if the returned list from read() is not empty
+            if not row:
                 store(extracted)
                 send_email(message=extracted)
-        time.sleep(2)
+            else:
+                print("DEBUG: Data probably already exists")
+
+        time.sleep(1.5)
