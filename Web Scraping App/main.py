@@ -7,27 +7,11 @@ import os
 import sqlite3
 from email.message import EmailMessage
 
-"""
-NOTES
-# Basic setup
-connection = sqlite3.connect("data.db")
-cursor = connection.cursor()
-# Launch sql query
-cursor.execute("SQL CODE HERE")
-# Get rows
-rows = cursor.fetchall()
-# Insert data
-new_rows = [(0,1,2), (3,4,5)]
-cursor.executemany("INSERT VALUES", new_rows)
-# Save Changes
-connection.commit()
-"""
-
-
 global URL
 URL = "http://programmer100.pythonanywhere.com/tours/"
 
 connection = sqlite3.connect("database.db")
+
 
 def scrape(url):
     """Scrape the page source from the URL"""
@@ -81,7 +65,7 @@ def store(extracted):
     # Assigns a new cursor
     cursor = connection.cursor()
     # Inserts values into the Database
-    cursor.execute("INSERT INTO Events VALUES(?,?,?)", row)
+    cursor.execute("INSERT INTO Events VALUES(NULL, ?,?,?)", row)
     # Makes changes
     connection.commit()
 
@@ -97,15 +81,26 @@ def read(extracted):
     cursor = connection.cursor()
 
     # Selects the extracted text from Database and pastes it into "rows" variable
-    cursor.execute("SELECT * FROM Events WHERE band=? AND city=? AND date_text=?", row)
+    cursor.execute("SELECT band,city,date_text FROM Events WHERE band=? AND city=? AND date_text=?", row)
     rows = cursor.fetchall()
 
     print("DEBUG: Data read, found: ", rows)
     return rows
 
 
-if __name__ == "__main__":
-    while True:
+def clear_database():
+    """Deletes all the records from database Events"""
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM Events")
+    connection.commit()
+    cursor.execute("DELETE FROM sqlite_sequence WHERE name = \"Events\"")
+    connection.commit()
+    print("DEBUG: Database cleared of all records")
+
+
+def run_program(amount: int):
+    entries_amount: int = 0
+    while entries_amount < amount:
         # Scrapes and extracts data
         scraped = scrape(URL)
         extracted = extract(scraped)
@@ -115,11 +110,36 @@ if __name__ == "__main__":
         if extracted != "No upcoming tours":
             row = read(extracted)
             print(row)
-            # Checks if the returned list from read() is not empty
+            # Checks if the returned list from read() is not empty A.K.A. If the entry already exists.
             if not row:
                 store(extracted)
                 send_email(message=extracted)
             else:
                 print("DEBUG: Data probably already exists")
 
+            # Fetches all ids from the database
+            cursor = connection.cursor()
+            cursor.execute("SELECT id FROM Events")
+            ids = cursor.fetchall()
+            # Converts the output to a list
+            ids = list(ids)
+            # Finds the last entry and turns it into an INT
+            last_id = int(ids[-1][0])
+            entries_amount = last_id
+
         time.sleep(1.5)
+
+    print("The program has finished recording all existing events (2)")
+    run_program_again = input("Would you like to run the program again? (YES/NO): ")
+    run_program_again.lower()
+    if run_program_again == "yes":
+        clear_database()
+        run_program(2)
+    else:
+        print("DEBUG: Ending program...")
+        time.sleep(1.5)
+        clear_database()
+        pass
+
+if __name__ == "__main__":
+    run_program(2)
