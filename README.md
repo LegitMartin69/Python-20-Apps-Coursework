@@ -49,7 +49,7 @@ This repo contains projects made during "Python Mega Course: Build 20 Real-World
         - choose your text file (book) path in the script  
         - run: python exercise.py  
 
-6. Motion Detection Security App  
+6. Motion Detection App  
     - Uses OpenCV + Threading + SMTP  
     - Monitors webcam feed, detects motion, saves frames, and emails an alert with the captured image  
     - To run:  
