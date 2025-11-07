@@ -26,7 +26,7 @@ def send_email(image_path):
     with open(".env", "r") as env:
         env_data = env.read()
         email_pattern = re.compile("EMAIL_ADDRESS[^a-zA-Z0-9]*([a-zA-Z0-9@.]+)\n")
-        password_pattern = re.compile("APP_PASSWORD[^a-zA-Z0-9]*([a-zA-Z]+)\n")
+        password_pattern = re.compile("APP_PASSWORD[^a-zA-Z0-9]*([a-zA-Z ]+)\n")
         GMAIL_APP_PASSWORD = re.findall(password_pattern, env_data)[0]
         EMAIL_ADDRESS = re.findall(email_pattern, env_data)[0]
 
