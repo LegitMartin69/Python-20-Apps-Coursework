@@ -7,6 +7,18 @@ import sqlite3
 import sys
 
 
+# TODO remove code smell - all those database connection calls
+
+
+class DatabaseConnection:
+    def __init__(self, database_file="database.db"):
+        self.database = database_file
+
+    def connect(self):
+        connection = sqlite3.connect(self.database)
+        return connection
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -81,7 +93,7 @@ class MainWindow(QMainWindow):
 
     def load_data(self):
         """Load data from database"""
-        connection = sqlite3.connect("database.db")
+        connection = DatabaseConnection().connect()
         result = connection.execute("SELECT * FROM students")
         # Prevents duplicate
         self.table.setRowCount(0)
@@ -188,7 +200,7 @@ class SearchDialog(QDialog):
         # local variables assignment
         name = self.search_field.text()
         # SQL Query
-        connection = sqlite3.connect("database.db")
+        connection = DatabaseConnection().connect()
         cursor = connection.cursor()
         result = cursor.execute("SELECT * FROM students WHERE name = ?", (name, ))
         rows = list(result)
@@ -251,7 +263,7 @@ class EditDialog(QDialog):
         course = self.course_name.itemText(self.course_name.currentIndex())
         mobile = self.mobile_number.text()
 
-        connection = sqlite3.connect("database.db")
+        connection = DatabaseConnection().connect()
         cursor = connection.cursor()
         cursor.execute("UPDATE students SET name = ?, course = ?, mobile = ? WHERE id = ?"
                        , (name, course, mobile, self.student_id))
@@ -289,7 +301,7 @@ class DeleteDialog(QDialog):
         index = main_window.table.currentRow()
         student_id = main_window.table.item(index, 0).text()
 
-        connection = sqlite3.connect("database.db")
+        connection = DatabaseConnection().connect()
         cursor = connection.cursor()
         cursor.execute("DELETE from students WHERE id = ?",
                        (student_id, ))
